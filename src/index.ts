@@ -1,7 +1,7 @@
 import axios from 'axios';
 import md5 from 'md5';
 export class Acenda {
-  constructor(public store: string, public accessToken: string) {
+  constructor(private store: string, private accessToken: string) {
   }
 
   public async create(endPoint: string, data: any) {

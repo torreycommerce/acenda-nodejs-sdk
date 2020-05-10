@@ -37,7 +37,7 @@ const result = await acenda.update('product',12345, {})
 
 ## List
 
-//second parameter params is optional
+Optional parameter is very useful for complex queries
 
 ```
 const acenda = new Acenda('<store>', '<access_token>')

@@ -10,7 +10,7 @@ export class Acenda {
       const response = await axios.post(url, data)
       return response.data
     } catch (error) {
-      console.log(error)
+      throw error
     }
   }
 
@@ -20,7 +20,7 @@ export class Acenda {
       const response = await axios.put(url, data)
       return response.data
     } catch (error) {
-      console.log(error)
+      throw error
     }
   }
 
@@ -30,7 +30,7 @@ export class Acenda {
       const response = await axios.delete(url)
       return response.data
     } catch (error) {
-      console.log(error)
+      throw error
     }
   }
 
@@ -40,7 +40,7 @@ export class Acenda {
       const response = await axios.get(url)
       return response.data
     } catch (error) {
-      console.log(error)
+      throw error
     }
   }
 
@@ -50,7 +50,7 @@ export class Acenda {
       const response = await axios.get(url)
       return response.data
     } catch (error) {
-      console.log(error)
+      throw error
     }
   }
 
@@ -65,7 +65,7 @@ export class Acenda {
 
       return `https://admin.acenda.com/preview/${hashedSlug}/api/${endPoint}?access_token=${this.accessToken}${params}`
     } catch (error) {
-      throw new Error(error)
+      throw error
     }
   }
 }

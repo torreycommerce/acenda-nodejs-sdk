@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import md5 from 'md5';
 export class Acenda {
   constructor(private store: string, private accessToken: string) {
@@ -8,7 +8,7 @@ export class Acenda {
     try {
       const url = this.urlBuilder(endPoint)
       const response = await axios.post(url, data)
-      return this.handleResponse(response)
+      return response.data
     } catch (error) {
       console.log(error)
     }
@@ -18,8 +18,7 @@ export class Acenda {
     try {
       const url = this.urlBuilder(`${endPoint}/${id}`)
       const response = await axios.put(url, data)
-      return this.handleResponse(response)
-
+      return response.data
     } catch (error) {
       console.log(error)
     }
@@ -29,17 +28,17 @@ export class Acenda {
     try {
       const url = this.urlBuilder(`${endPoint}/${id}`)
       const response = await axios.delete(url)
-      return this.handleResponse(response)
+      return response.data
     } catch (error) {
       console.log(error)
     }
   }
 
-  public async list(endPoint: string) {
+  public async list(endPoint: string, params?: string) {
     try {
-      const url = this.urlBuilder(endPoint)
+      const url = this.urlBuilder(endPoint, params)
       const response = await axios.get(url)
-      return this.handleResponse(response)
+      return response.data
     } catch (error) {
       console.log(error)
     }
@@ -49,26 +48,24 @@ export class Acenda {
     try {
       const url = this.urlBuilder(`${endPoint}/${id}`)
       const response = await axios.get(url)
-      return this.handleResponse(response)
+      return response.data
     } catch (error) {
       console.log(error)
     }
   }
 
-  private urlBuilder(endPoint: string): string {
+  private urlBuilder(endPoint: string, params?: string): string {
     try {
       const hashedSlug = md5(this.store)
-      return `https://admin.acenda.com/preview/${hashedSlug}/api/${endPoint}?access_token=${this.accessToken}`
+      if (params) {
+        params = '&' + JSON.stringify(params)
+      } else {
+        params = ""
+      }
+
+      return `https://admin.acenda.com/preview/${hashedSlug}/api/${endPoint}?access_token=${this.accessToken}${params}`
     } catch (error) {
       throw new Error(error)
-    }
-  }
-
-  private handleResponse(response: AxiosResponse) {
-    if (response.status == 200 || response.status == 201) {
-      return response.data
-    } else {
-      throw new Error(`Error ${response.status} ${response.statusText}`)
     }
   }
 }

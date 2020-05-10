@@ -37,9 +37,19 @@ const result = await acenda.update('product',12345, {})
 
 ## List
 
+//second parameter params is optional
+
 ```
 const acenda = new Acenda('<store>', '<access_token>')
-const result = await acenda.list('product')
+const result = await acenda.list('order',`query={date_created:{$gte:'2020-04-28'}}`)
+```
+
+## Delete
+
+```
+//12345 is id
+const acenda = new Acenda('<store>', '<access_token>')
+const result = await acenda.delete('product', 12345)
 ```
 
 ## Get
@@ -95,12 +105,19 @@ const result = await acenda.get('product', 26764)
 }
 ```
 
-## Delete
+## Errors
 
 ```
-//12345 is id
-const acenda = new Acenda('<store>', '<access_token>')
-const result = await acenda.delete('product', 12345)
+  code: 401,
+  status: 'Invalid access token',
+  error: 'Invalid access token'
+```
+
+```
+  code: 400,
+  status: 'Bad Request',
+  execution_time: 0.028566122055054,
+  error: 'Specified query is invalid.'
 ```
 
 ## Tip

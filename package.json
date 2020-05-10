@@ -1,0 +1,21 @@
+{
+  "name": "acenda",
+  "version": "0.1.0",
+  "description": "Acenda nodejs SDK",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prepublish": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "acenda"
+  ],
+  "author": "Ahmet Tok",
+  "license": "MIT",
+  "dependencies": {
+    "@types/md5": "^2.2.0",
+    "axios": "^0.19.2",
+    "md5": "^2.2.1"
+  }
+}

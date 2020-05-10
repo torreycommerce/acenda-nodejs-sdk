@@ -60,4 +60,4 @@ const result = await acenda.delete('product', 12345)
 
 ## Tip
 
-Before you create or update a model, first list that model using list method. Then Get a single record by using get method with one of the returned ids from list. Returned data is available to insert or update. Be careful to matching field types
+Before you create or update a model, first list that model using "list" method. Then get a single record by using "get" method with one of the ids from the returned list. Use returned data as a reference to insert or update a record. Pay attention to matching field types.

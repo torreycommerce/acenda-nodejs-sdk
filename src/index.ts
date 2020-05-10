@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import md5 from 'md5';
 export class Acenda {
   constructor(private store: string, private accessToken: string) {
@@ -7,7 +7,8 @@ export class Acenda {
   public async create(endPoint: string, data: any) {
     try {
       const url = this.urlBuilder(endPoint)
-      return await axios.post(url, data)
+      const response = await axios.post(url, data)
+      return this.handleResponse(response)
     } catch (error) {
       console.log(error)
     }
@@ -16,7 +17,9 @@ export class Acenda {
   public async update(endPoint: string, id: number, data: any) {
     try {
       const url = this.urlBuilder(`${endPoint}/${id}`)
-      return await axios.put(url, data)
+      const response = await axios.put(url, data)
+      return this.handleResponse(response)
+
     } catch (error) {
       console.log(error)
     }
@@ -25,7 +28,8 @@ export class Acenda {
   public async delete(endPoint: string, id: number) {
     try {
       const url = this.urlBuilder(`${endPoint}/${id}`)
-      return await axios.delete(url)
+      const response = await axios.delete(url)
+      return this.handleResponse(response)
     } catch (error) {
       console.log(error)
     }
@@ -34,7 +38,8 @@ export class Acenda {
   public async list(endPoint: string) {
     try {
       const url = this.urlBuilder(endPoint)
-      return await axios.get(url)
+      const response = await axios.get(url)
+      return this.handleResponse(response)
     } catch (error) {
       console.log(error)
     }
@@ -43,7 +48,8 @@ export class Acenda {
   public async get(endPoint: string, id: number) {
     try {
       const url = this.urlBuilder(`${endPoint}/${id}`)
-      return await axios.get(url)
+      const response = await axios.get(url)
+      return this.handleResponse(response)
     } catch (error) {
       console.log(error)
     }
@@ -55,6 +61,14 @@ export class Acenda {
       return `https://admin.acenda.com/preview/${hashedSlug}/api/${endPoint}?access_token=${this.accessToken}`
     } catch (error) {
       throw new Error(error)
+    }
+  }
+
+  private handleResponse(response: AxiosResponse) {
+    if (response.status == 200 || response.status == 201) {
+      return response.data
+    } else {
+      throw new Error(`Error ${response.status} ${response.statusText}`)
     }
   }
 }

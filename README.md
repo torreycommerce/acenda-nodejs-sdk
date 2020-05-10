@@ -45,9 +45,54 @@ const result = await acenda.list('product')
 ## Get
 
 ```
-//12345 is id
+//26764 is id
 const acenda = new Acenda('<store>', '<access_token>')
-const result = await acenda.get('product', 12345)
+const result = await acenda.get('product', 26764)
+```
+
+## Response
+
+```
+{
+  code: 200,
+  status: 'OK',
+  execution_time: 0.10566782951355,
+  num_total: 1,
+  result: {
+    id: 26764,
+    group: 'product',
+    status: 'active',
+    slug: 'test-product',
+    name: 'test product',
+    collection_id: [],
+    category_id: [],
+    customer_group_id: [],
+    popularity: 0,
+    brand: '',
+    type: '',
+    tags: [],
+    description: '',
+    cross_sellers: [],
+    review_score: 0,
+    options: [ 'size' ],
+    images: [],
+    videos: [],
+    dynamic_attributes: [],
+    personalization_options: [],
+    date_modified: '2020-01-28 09:16:11',
+    date_created: '2020-01-28 07:10:47',
+    title: 'test product',
+    thumbnail: 'https://images.acenda-static.com/zuzu/product/thumbnail/250x250/1/default.jpg',
+    url: '/product/test-product',
+    category: null,
+    taxjar_code: null,
+    amazon_enabled: null,
+    amazon_posting_template: null,
+    collections: [],
+    variants: [],
+    categories: []
+  }
+}
 ```
 
 ## Delete

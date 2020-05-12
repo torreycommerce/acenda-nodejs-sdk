@@ -120,6 +120,20 @@ const result = await acenda.get('product', 26764)
   error: 'Specified query is invalid.'
 ```
 
+```
+  code: 403,
+  status: 'Forbidden',
+  execution_time: 0.028566122055054,
+  error: 'Forbidden'
+```
+
+```
+  code: 404,
+  status: 'Not Found',
+  execution_time: 0.028566122055054,
+  error: 'Not Found'
+```
+
 ## Tip
 
 Before you create or update a model, first list that model using "list" method. Then get a single record by using "get" method with one of the ids from the returned list. Use returned data as a reference to insert or update a record. Pay attention to matching field types.

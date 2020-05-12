@@ -58,7 +58,7 @@ export class Acenda {
     try {
       const hashedSlug = md5(this.store)
       if (params) {
-        params = '&' + JSON.stringify(params)
+        params = '&' + encodeURIComponent(params)
       } else {
         params = ""
       }

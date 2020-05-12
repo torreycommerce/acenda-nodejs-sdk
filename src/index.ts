@@ -63,7 +63,7 @@ export class Acenda {
         params = ""
       }
 
-      return `https://admin.acenda.com/preview/${hashedSlug}/api/${endPoint}?access_token=${this.accessToken}${params}`
+      return encodeURI(`https://admin.acenda.com/preview/${hashedSlug}/api/${endPoint}?access_token=${this.accessToken}${params}`)
     } catch (error) {
       throw error
     }

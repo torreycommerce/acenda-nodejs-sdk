@@ -58,12 +58,16 @@ export class Acenda {
     try {
       const hashedSlug = md5(this.store)
       if (params) {
-        params = '&' + encodeURIComponent(params)
+        params = encodeURIComponent(params)
+        params = params.replace('%3D', '=').replace('%3A', ':').replace('%24', '$')
+      }
+
+      if (params) {
+        params = '&' + params
       } else {
         params = ""
       }
-
-      return encodeURI(`https://admin.acenda.com/preview/${hashedSlug}/api/${endPoint}?access_token=${this.accessToken}${params}`)
+      return `https://admin.acenda.com/preview/${hashedSlug}/api/${endPoint}?access_token=${this.accessToken}${params}`
     } catch (error) {
       throw error
     }

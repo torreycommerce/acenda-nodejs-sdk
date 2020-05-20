@@ -14,7 +14,7 @@ export class Acenda {
     }
   }
 
-  public async update(endPoint: string, id: number, data: any) {
+  public async update(endPoint: string, id: string, data: any) {
     try {
       const url = this.urlBuilder(`${endPoint}/${id}`)
       const response = await axios.put(url, data)
@@ -24,7 +24,7 @@ export class Acenda {
     }
   }
 
-  public async delete(endPoint: string, id: number) {
+  public async delete(endPoint: string, id: string) {
     try {
       const url = this.urlBuilder(`${endPoint}/${id}`)
       const response = await axios.delete(url)
@@ -44,7 +44,7 @@ export class Acenda {
     }
   }
 
-  public async get(endPoint: string, id: number) {
+  public async get(endPoint: string, id: string) {
     try {
       const url = this.urlBuilder(`${endPoint}/${id}`)
       const response = await axios.get(url)

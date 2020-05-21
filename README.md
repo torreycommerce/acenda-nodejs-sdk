@@ -32,7 +32,7 @@ const result = await acenda.create('product', {})
 ```
 //12345 is id
 const acenda = new Acenda('<store>', '<access_token>')
-const result = await acenda.update('product',12345, {})
+const result = await acenda.update('product','12345', {})
 ```
 
 ## List
@@ -49,7 +49,7 @@ const result = await acenda.list('order',`query={date_created:{$gte:'2020-04-28'
 ```
 //12345 is id
 const acenda = new Acenda('<store>', '<access_token>')
-const result = await acenda.delete('product', 12345)
+const result = await acenda.delete('product', '12345')
 ```
 
 ## Get
@@ -57,7 +57,7 @@ const result = await acenda.delete('product', 12345)
 ```
 //26764 is id
 const acenda = new Acenda('<store>', '<access_token>')
-const result = await acenda.get('product', 26764)
+const result = await acenda.get('product', '26764')
 ```
 
 ## Response

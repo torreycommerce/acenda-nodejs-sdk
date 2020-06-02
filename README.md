@@ -24,7 +24,7 @@ import { Acenda } from 'acenda'
 
 ```
 const acenda = new Acenda('<store>', '<access_token>')
-const result = await acenda.create('product', {})
+const response = await acenda.create('product', {})
 ```
 
 ## Update
@@ -32,7 +32,7 @@ const result = await acenda.create('product', {})
 ```
 //12345 is id
 const acenda = new Acenda('<store>', '<access_token>')
-const result = await acenda.update('product','12345', {})
+const response = await acenda.update('product','12345', {})
 ```
 
 ## List
@@ -41,15 +41,19 @@ Optional parameter is very useful for complex queries
 
 ```
 const acenda = new Acenda('<store>', '<access_token>')
-const result = await acenda.list('order',`query={date_created:{$gte:'2020-04-28'}}`)
+const response = await acenda.list('order',`query={date_created:{$gte:'2020-04-28'}}`)
 ```
+
+Pagination (optional)
+
+const response = await acenda.list('order',`query={date_created:{$gte:'2020-04-28'}}`,1,100)
 
 ## Delete
 
 ```
 //12345 is id
 const acenda = new Acenda('<store>', '<access_token>')
-const result = await acenda.delete('product', '12345')
+const response = await acenda.delete('product', '12345')
 ```
 
 ## Get
@@ -57,12 +61,13 @@ const result = await acenda.delete('product', '12345')
 ```
 //26764 is id
 const acenda = new Acenda('<store>', '<access_token>')
-const result = await acenda.get('product', '26764')
+const response = await acenda.get('product', '26764')
 ```
 
 ## Response
 
 ```
+response.data
 {
   code: 200,
   status: 'OK',

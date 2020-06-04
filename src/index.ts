@@ -59,9 +59,13 @@ export class Acenda {
       const hashedSlug = md5(this.store)
       if (params) {
         params = encodeURIComponent(params)
-        params = params.replace('/%3D/g', '=').replace('/%3A/g', ':').replace('/%24/g', '$')
+        let regexEqual = new RegExp('%3D', 'g');
+        let regexSemicolumn = new RegExp('%3A', 'g');
+        let regexDollar = new RegExp('%24', 'g');
+        let regexLeftCurlyBracket = new RegExp('%7B', 'g');
+        let regexRightCurlyBracket = new RegExp('%7D', 'g');
+        params = params.replace(regexEqual, '=').replace(regexSemicolumn, ':').replace(regexDollar, '$').replace(regexLeftCurlyBracket, '{').replace(regexRightCurlyBracket, '}')
       }
-
       if (params) {
         params = '&' + params
       } else {

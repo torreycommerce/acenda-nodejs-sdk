@@ -3,14 +3,26 @@ import md5 from 'md5';
 export class Acenda {
   constructor(private store: string, private accessToken: string) {
   }
-
+  private wait() {
+    return new Promise((r, j) => setTimeout(r, Math.pow(6, this.retryAttempt) * 10000))
+  }
+  private retryAttempt = 0
   public async create(endPoint: string, data: any) {
     try {
       const url = this.urlBuilder(endPoint)
       const response = await axios.post(url, data)
+      if (response.data) {
+        this.retryAttempt
+      }
       return response
     } catch (error) {
-      throw error
+      if (this.retryAttempt < 2) {
+        await this.wait()
+        this.retryAttempt++
+        await this.create(endPoint, data)
+      } else {
+        throw error
+      }
     }
   }
 
@@ -18,9 +30,18 @@ export class Acenda {
     try {
       const url = this.urlBuilder(`${endPoint}/${id}`)
       const response = await axios.put(url, data)
+      if (response.data) {
+        this.retryAttempt
+      }
       return response
     } catch (error) {
-      throw error
+      if (this.retryAttempt < 2) {
+        await this.wait()
+        this.retryAttempt++
+        await this.update(endPoint, id, data)
+      } else {
+        throw error
+      }
     }
   }
 
@@ -28,9 +49,18 @@ export class Acenda {
     try {
       const url = this.urlBuilder(`${endPoint}/${id}`)
       const response = await axios.delete(url)
+      if (response.data) {
+        this.retryAttempt
+      }
       return response
     } catch (error) {
-      throw error
+      if (this.retryAttempt < 2) {
+        await this.wait()
+        this.retryAttempt++
+        await this.delete(endPoint, id)
+      } else {
+        throw error
+      }
     }
   }
 
@@ -38,9 +68,18 @@ export class Acenda {
     try {
       const url = this.urlBuilder(endPoint, params, page, limit)
       const response = await axios.get(url)
+      if (response.data) {
+        this.retryAttempt
+      }
       return response
     } catch (error) {
-      throw error
+      if (this.retryAttempt < 2) {
+        await this.wait()
+        this.retryAttempt++
+        await this.list(endPoint, params, page, limit)
+      } else {
+        throw error
+      }
     }
   }
 
@@ -48,9 +87,18 @@ export class Acenda {
     try {
       const url = this.urlBuilder(`${endPoint}/${id}`)
       const response = await axios.get(url)
+      if (response.data) {
+        this.retryAttempt
+      }
       return response
     } catch (error) {
-      throw error
+      if (this.retryAttempt < 2) {
+        await this.wait()
+        this.retryAttempt++
+        await this.get(endPoint, id)
+      } else {
+        throw error
+      }
     }
   }
 

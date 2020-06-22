@@ -1,101 +1,121 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import md5 from 'md5';
 export class Acenda {
   constructor(private store: string, private accessToken: string) {
   }
   private wait() {
-    return new Promise((r, j) => setTimeout(r, Math.pow(6, this.retryAttempt) * 10000))
+    return new Promise((r, j) => setTimeout(r, this.retryAttempt * 30000))
   }
   private retryAttempt = 0
-  public async create(endPoint: string, data: any) {
+  public async create(endPoint: string, data: any): Promise<AxiosResponse> {
     try {
       const url = this.urlBuilder(endPoint)
       const response = await axios.post(url, data)
-      if (response.data) {
-        this.retryAttempt
+
+      if (response.status !== 200 && response.status !== 201) {
+        this.retryAttempt++
+        return await this.create(endPoint, data)
+      } else {
+        this.retryAttempt = 0
       }
       return response
     } catch (error) {
-      if (this.retryAttempt < 2) {
+      if (this.retryAttempt < 10) {
         await this.wait()
         this.retryAttempt++
-        await this.create(endPoint, data)
+        return await this.create(endPoint, data)
       } else {
         throw error
       }
     }
   }
 
-  public async update(endPoint: string, id: string, data: any) {
+  public async update(endPoint: string, id: string, data: any): Promise<AxiosResponse> {
     try {
       const url = this.urlBuilder(`${endPoint}/${id}`)
       const response = await axios.put(url, data)
-      if (response.data) {
-        this.retryAttempt
+
+      if (response.status !== 200 && response.status !== 201) {
+        this.retryAttempt++
+        return await this.update(endPoint, id, data)
+      } else {
+        this.retryAttempt = 0
       }
       return response
     } catch (error) {
-      if (this.retryAttempt < 2) {
+      if (this.retryAttempt < 10) {
         await this.wait()
         this.retryAttempt++
-        await this.update(endPoint, id, data)
+        return await this.update(endPoint, id, data)
       } else {
         throw error
       }
     }
   }
 
-  public async delete(endPoint: string, id: string) {
+  public async delete(endPoint: string, id: string): Promise<AxiosResponse> {
     try {
       const url = this.urlBuilder(`${endPoint}/${id}`)
-      const response = await axios.delete(url)
-      if (response.data) {
-        this.retryAttempt
+      const response = await axios.delete(url, { timeout: 60000 })
+
+      if (response.status !== 200 && response.status !== 201) {
+        this.retryAttempt++
+        return await this.delete(endPoint, id)
+      } else {
+        this.retryAttempt = 0
       }
       return response
     } catch (error) {
-      if (this.retryAttempt < 2) {
-        await this.wait()
+      if (this.retryAttempt < 10) {
         this.retryAttempt++
-        await this.delete(endPoint, id)
+        await this.wait()
+        return await this.delete(endPoint, id)
       } else {
         throw error
       }
     }
   }
 
-  public async list(endPoint: string, params?: string, page?: number, limit?: number) {
+  public async list(endPoint: string, params?: string, page?: number, limit?: number): Promise<AxiosResponse> {
     try {
       const url = this.urlBuilder(endPoint, params, page, limit)
-      const response = await axios.get(url)
-      if (response.data) {
-        this.retryAttempt
+      const response = await axios.get(url, { timeout: 60000 })
+
+      if (response.status !== 200 && response.status !== 201) {
+        this.retryAttempt++
+        return await this.list(endPoint, params, page, limit)
+      } else {
+        this.retryAttempt = 0
       }
       return response
     } catch (error) {
-      if (this.retryAttempt < 2) {
-        await this.wait()
+      if (this.retryAttempt < 10) {
         this.retryAttempt++
-        await this.list(endPoint, params, page, limit)
+        await this.wait()
+        return await this.list(endPoint, params, page, limit)
       } else {
         throw error
       }
     }
   }
 
-  public async get(endPoint: string, id: string) {
+  public async get(endPoint: string, id: string): Promise<AxiosResponse> {
     try {
       const url = this.urlBuilder(`${endPoint}/${id}`)
       const response = await axios.get(url)
-      if (response.data) {
-        this.retryAttempt
+
+      if (response.status !== 200 && response.status !== 201) {
+        this.retryAttempt++
+        return await this.get(endPoint, id)
+      } else {
+        this.retryAttempt = 0
       }
       return response
     } catch (error) {
-      if (this.retryAttempt < 2) {
-        await this.wait()
+      if (this.retryAttempt < 10) {
         this.retryAttempt++
-        await this.get(endPoint, id)
+        await this.wait()
+        return await this.get(endPoint, id)
       } else {
         throw error
       }

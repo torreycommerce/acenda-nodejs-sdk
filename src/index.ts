@@ -11,16 +11,12 @@ export class Acenda {
     try {
       const url = this.urlBuilder(endPoint)
       const response = await axios.post(url, data)
-
-      if (response.status !== 200 && response.status !== 201) {
-        this.retryAttempt++
-        return await this.create(endPoint, data)
-      } else {
-        this.retryAttempt = 0
-      }
+      this.retryAttempt = 0
       return response
     } catch (error) {
-      if (this.retryAttempt < 10) {
+      if (error.response && error.response.status >= 400 && error.response.status < 500) {
+        throw error
+      } else if (this.retryAttempt < 10) {
         await this.wait()
         this.retryAttempt++
         return await this.create(endPoint, data)
@@ -34,16 +30,12 @@ export class Acenda {
     try {
       const url = this.urlBuilder(`${endPoint}/${id}`)
       const response = await axios.put(url, data)
-
-      if (response.status !== 200 && response.status !== 201) {
-        this.retryAttempt++
-        return await this.update(endPoint, id, data)
-      } else {
-        this.retryAttempt = 0
-      }
+      this.retryAttempt = 0
       return response
     } catch (error) {
-      if (this.retryAttempt < 10) {
+      if (error.response && error.response.status >= 400 && error.response.status < 500) {
+        throw error
+      } else if (this.retryAttempt < 10) {
         await this.wait()
         this.retryAttempt++
         return await this.update(endPoint, id, data)
@@ -57,16 +49,12 @@ export class Acenda {
     try {
       const url = this.urlBuilder(`${endPoint}/${id}`)
       const response = await axios.delete(url, { timeout: 60000 })
-
-      if (response.status !== 200 && response.status !== 201) {
-        this.retryAttempt++
-        return await this.delete(endPoint, id)
-      } else {
-        this.retryAttempt = 0
-      }
+      this.retryAttempt = 0
       return response
     } catch (error) {
-      if (this.retryAttempt < 10) {
+      if (error.response && error.response.status >= 400 && error.response.status < 500) {
+        throw error
+      } else if (this.retryAttempt < 10) {
         this.retryAttempt++
         await this.wait()
         return await this.delete(endPoint, id)
@@ -80,16 +68,12 @@ export class Acenda {
     try {
       const url = this.urlBuilder(endPoint, params, page, limit)
       const response = await axios.get(url, { timeout: 60000 })
-
-      if (response.status !== 200 && response.status !== 201) {
-        this.retryAttempt++
-        return await this.list(endPoint, params, page, limit)
-      } else {
-        this.retryAttempt = 0
-      }
+      this.retryAttempt = 0
       return response
     } catch (error) {
-      if (this.retryAttempt < 10) {
+      if (error.response && error.response.status >= 400 && error.response.status < 500) {
+        throw error
+      } else if (this.retryAttempt < 10) {
         this.retryAttempt++
         await this.wait()
         return await this.list(endPoint, params, page, limit)
@@ -103,16 +87,12 @@ export class Acenda {
     try {
       const url = this.urlBuilder(`${endPoint}/${id}`)
       const response = await axios.get(url)
-
-      if (response.status !== 200 && response.status !== 201) {
-        this.retryAttempt++
-        return await this.get(endPoint, id)
-      } else {
-        this.retryAttempt = 0
-      }
+      this.retryAttempt = 0
       return response
     } catch (error) {
-      if (this.retryAttempt < 10) {
+      if (error.response && error.response.status >= 400 && error.response.status < 500) {
+        throw error
+      } else if (this.retryAttempt < 10) {
         this.retryAttempt++
         await this.wait()
         return await this.get(endPoint, id)

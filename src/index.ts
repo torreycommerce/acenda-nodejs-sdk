@@ -1,103 +1,118 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import md5 from 'md5';
+export interface AcendaErrorResponse {
+  code: number
+  status: string
+  error: string
+}
+
+export class AcendaError implements AxiosError {
+  constructor(public config: AxiosRequestConfig, public error: AxiosError) {
+    this.code = error.response?.status.toString()
+    this.name = error.name
+    this.message = error.response?.statusText || error.message
+    this.isAxiosError = error.isAxiosError
+  }
+  code?: string | undefined;
+  request?: any;
+  response?: AxiosResponse<any> | undefined;
+  isAxiosError: boolean;
+  name: string;
+  message: string;
+  stack?: string | undefined;
+  toJSON(): object {
+    return this.toJSON();
+  }
+}
 export class Acenda {
   constructor(private store: string, private accessToken: string) {
   }
   private wait() {
-    return new Promise((r, j) => setTimeout(r, this.retryAttempt * 30000))
+    return new Promise((r, j) => setTimeout(r, this.retryAttempt * 5000))
   }
   private retryAttempt = 0
   public async create(endPoint: string, data: any): Promise<AxiosResponse> {
+    const url = this.urlBuilder(endPoint)
     try {
-      const url = this.urlBuilder(endPoint)
       const response = await axios.post(url, data)
       this.retryAttempt = 0
       return response
     } catch (error) {
-      if (error.response && error.response.status >= 400 && error.response.status < 500) {
-        throw error
-      } else if (this.retryAttempt < 10) {
-        await this.wait()
+      if (error.response && error.response.status == 429 && this.retryAttempt < 5) {
         this.retryAttempt++
+        await this.wait();
         return await this.create(endPoint, data)
       } else {
-        throw error
+        throw new AcendaError({ url }, error);
       }
     }
   }
 
   public async update(endPoint: string, id: string, data: any): Promise<AxiosResponse> {
+    const url = this.urlBuilder(`${endPoint}/${id}`)
     try {
-      const url = this.urlBuilder(`${endPoint}/${id}`)
       const response = await axios.put(url, data)
       this.retryAttempt = 0
       return response
     } catch (error) {
-      if (error.response && error.response.status >= 400 && error.response.status < 500) {
-        throw error
-      } else if (this.retryAttempt < 10) {
-        await this.wait()
+      if (error.response && error.response.status == 429 && this.retryAttempt < 5) {
         this.retryAttempt++
+        await this.wait();
         return await this.update(endPoint, id, data)
       } else {
-        throw error
+        throw new AcendaError({ url }, error);
       }
     }
   }
 
   public async delete(endPoint: string, id: string): Promise<AxiosResponse> {
+    const url = this.urlBuilder(`${endPoint}/${id}`)
+
     try {
-      const url = this.urlBuilder(`${endPoint}/${id}`)
       const response = await axios.delete(url, { timeout: 60000 })
       this.retryAttempt = 0
       return response
     } catch (error) {
-      if (error.response && error.response.status >= 400 && error.response.status < 500) {
-        throw error
-      } else if (this.retryAttempt < 10) {
+      if (error.response && error.response.status == 429 && this.retryAttempt < 5) {
         this.retryAttempt++
-        await this.wait()
+        await this.wait();
         return await this.delete(endPoint, id)
       } else {
-        throw error
+        throw new AcendaError({ url }, error);
       }
     }
   }
 
   public async list(endPoint: string, params?: string, page?: number, limit?: number): Promise<AxiosResponse> {
+    const url = this.urlBuilder(endPoint, params, page, limit)
     try {
-      const url = this.urlBuilder(endPoint, params, page, limit)
       const response = await axios.get(url, { timeout: 60000 })
       this.retryAttempt = 0
       return response
     } catch (error) {
-      if (error.response && error.response.status >= 400 && error.response.status < 500) {
-        throw error
-      } else if (this.retryAttempt < 10) {
+      if (error.response && error.response.status == 429 && this.retryAttempt < 5) {
         this.retryAttempt++
-        await this.wait()
+        await this.wait();
         return await this.list(endPoint, params, page, limit)
       } else {
-        throw error
+        throw new AcendaError({ url }, error);
       }
     }
   }
 
   public async get(endPoint: string, id: string): Promise<AxiosResponse> {
+    const url = this.urlBuilder(`${endPoint}/${id}`)
     try {
-      const url = this.urlBuilder(`${endPoint}/${id}`)
       const response = await axios.get(url)
       this.retryAttempt = 0
       return response
     } catch (error) {
-      if (error.response && error.response.status >= 400 && error.response.status < 500) {
-        throw error
-      } else if (this.retryAttempt < 10) {
+      if (error.response && error.response.status == 429 && this.retryAttempt < 5) {
         this.retryAttempt++
-        await this.wait()
+        await this.wait();
         return await this.get(endPoint, id)
       } else {
-        throw error
+        throw new AcendaError({ url }, error);
       }
     }
   }
@@ -128,3 +143,4 @@ export class Acenda {
     }
   }
 }
+

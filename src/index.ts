@@ -24,9 +24,11 @@ export class AcendaError implements AxiosError {
     return this.toJSON();
   }
 }
+
 export class Acenda {
-  constructor(private store: string, private accessToken: string) {
+  constructor(private store: string, private accessToken: string, private retryOnFail: boolean = true) {
   }
+  
   private wait() {
     return new Promise((r, j) => setTimeout(r, this.retryAttempt * 5000))
   }
@@ -38,7 +40,7 @@ export class Acenda {
       this.retryAttempt = 0
       return response
     } catch (error) {
-      if (error.response && error.response.status == 429 && this.retryAttempt < 5) {
+      if (error.response && error.response.status == 429 && this.retryAttempt < 5 && this.retryOnFail) {
         this.retryAttempt++
         await this.wait();
         return await this.create(endPoint, data)
@@ -55,7 +57,7 @@ export class Acenda {
       this.retryAttempt = 0
       return response
     } catch (error) {
-      if (error.response && error.response.status == 429 && this.retryAttempt < 5) {
+      if (error.response && error.response.status == 429 && this.retryAttempt < 5 && this.retryOnFail) {
         this.retryAttempt++
         await this.wait();
         return await this.update(endPoint, id, data)
@@ -73,7 +75,7 @@ export class Acenda {
       this.retryAttempt = 0
       return response
     } catch (error) {
-      if (error.response && error.response.status == 429 && this.retryAttempt < 5) {
+      if (error.response && error.response.status == 429 && this.retryAttempt < 5 && this.retryOnFail) {
         this.retryAttempt++
         await this.wait();
         return await this.delete(endPoint, id)
@@ -90,7 +92,7 @@ export class Acenda {
       this.retryAttempt = 0
       return response
     } catch (error) {
-      if (error.response && error.response.status == 429 && this.retryAttempt < 5) {
+      if (error.response && error.response.status == 429 && this.retryAttempt < 5 && this.retryOnFail) {
         this.retryAttempt++
         await this.wait();
         return await this.list(endPoint, params, page, limit)
@@ -107,7 +109,7 @@ export class Acenda {
       this.retryAttempt = 0
       return response
     } catch (error) {
-      if (error.response && error.response.status == 429 && this.retryAttempt < 5) {
+      if (error.response && error.response.status == 429 && this.retryAttempt < 5 && this.retryOnFail) {
         this.retryAttempt++
         await this.wait();
         return await this.get(endPoint, id)

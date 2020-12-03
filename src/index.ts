@@ -8,10 +8,12 @@ export interface AcendaErrorResponse {
 
 export class AcendaError implements AxiosError {
   constructor(public config: AxiosRequestConfig, public error: AxiosError) {
-    this.code = error.response?.status.toString()
+    this.code = error.code ? error.code : error.response?.status.toString()
     this.name = error.name
-    this.message = error.response?.statusText || error.message
+    this.message = error.message ? error.message : error.response?.data.error
     this.isAxiosError = error.isAxiosError
+    this.response = error.response
+    this.request = error.request
   }
   code?: string | undefined;
   request?: any;
@@ -28,7 +30,7 @@ export class AcendaError implements AxiosError {
 export class Acenda {
   constructor(private store: string, private accessToken: string, private retryOnFail: boolean = true) {
   }
-  
+
   private wait() {
     return new Promise((r, j) => setTimeout(r, this.retryAttempt * 5000))
   }

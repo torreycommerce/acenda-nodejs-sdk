@@ -1,6 +1,6 @@
 {
   "name": "acenda",
-  "version": "1.5.9",
+  "version": "1.5.10",
   "description": "Acenda nodejs SDK",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -11,7 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "@types/md5": "^2.2.1",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "md5": "^2.3.0"
   }
 }

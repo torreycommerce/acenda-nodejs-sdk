@@ -31,20 +31,21 @@ export class Acenda {
   constructor(private store: string, private accessToken: string, private retryOnFail: boolean = true) {
   }
 
-  private wait() {
-    return new Promise((r, j) => setTimeout(r, this.retryAttempt * 5000))
+  private wait(seconds: number) {
+    return new Promise((r, j) => setTimeout(r, 1000 * seconds))
   }
   private retryAttempt = 0
   public async create(endPoint: string, data: any): Promise<AxiosResponse> {
     const url = this.urlBuilder(endPoint)
     try {
       const response = await axios.post(url, data)
+      await this.handleThrottling(response);
       this.retryAttempt = 0
       return response
     } catch (error) {
-      if (error.response && error.response.status == 429 && this.retryAttempt < 5 && this.retryOnFail) {
+      if (error.response && error.response.status == 429 && this.retryAttempt < 3 && this.retryOnFail) {
         this.retryAttempt++
-        await this.wait();
+        await this.wait(this.retryAttempt * 2);
         return await this.create(endPoint, data)
       } else {
         throw new AcendaError({ url }, error);
@@ -52,16 +53,25 @@ export class Acenda {
     }
   }
 
+  private async handleThrottling(response: AxiosResponse<any>) {
+    const rateLimit: string = response.headers["x-acenda-api-throttle-call-limit"];
+    const rate = Number(rateLimit.substring(0, rateLimit.indexOf('/') - 1).trim());
+    if (rate >= 80) {
+      await this.wait(3);
+    }
+  }
+
   public async update(endPoint: string, id: string, data: any): Promise<AxiosResponse> {
     const url = this.urlBuilder(`${endPoint}/${id}`)
     try {
       const response = await axios.put(url, data)
+      await this.handleThrottling(response);
       this.retryAttempt = 0
       return response
     } catch (error) {
-      if (error.response && error.response.status == 429 && this.retryAttempt < 5 && this.retryOnFail) {
+      if (error.response && error.response.status == 429 && this.retryAttempt < 3 && this.retryOnFail) {
         this.retryAttempt++
-        await this.wait();
+        await this.wait(this.retryAttempt * 2);
         return await this.update(endPoint, id, data)
       } else {
         throw new AcendaError({ url }, error);
@@ -74,12 +84,13 @@ export class Acenda {
 
     try {
       const response = await axios.delete(url, { timeout: 60000 })
+      await this.handleThrottling(response);
       this.retryAttempt = 0
       return response
     } catch (error) {
-      if (error.response && error.response.status == 429 && this.retryAttempt < 5 && this.retryOnFail) {
+      if (error.response && error.response.status == 429 && this.retryAttempt < 3 && this.retryOnFail) {
         this.retryAttempt++
-        await this.wait();
+        await this.wait(this.retryAttempt * 2);
         return await this.delete(endPoint, id)
       } else {
         throw new AcendaError({ url }, error);
@@ -91,12 +102,13 @@ export class Acenda {
     const url = this.urlBuilder(endPoint, params, page, limit)
     try {
       const response = await axios.get(url, { timeout: 60000 })
+      await this.handleThrottling(response);
       this.retryAttempt = 0
       return response
     } catch (error) {
-      if (error.response && error.response.status == 429 && this.retryAttempt < 5 && this.retryOnFail) {
+      if (error.response && error.response.status == 429 && this.retryAttempt < 3 && this.retryOnFail) {
         this.retryAttempt++
-        await this.wait();
+        await this.wait(this.retryAttempt * 2);
         return await this.list(endPoint, params, page, limit)
       } else {
         throw new AcendaError({ url }, error);
@@ -108,12 +120,13 @@ export class Acenda {
     const url = this.urlBuilder(`${endPoint}/${id}`)
     try {
       const response = await axios.get(url)
+      await this.handleThrottling(response);
       this.retryAttempt = 0
       return response
     } catch (error) {
-      if (error.response && error.response.status == 429 && this.retryAttempt < 5 && this.retryOnFail) {
+      if (error.response && error.response.status == 429 && this.retryAttempt < 3 && this.retryOnFail) {
         this.retryAttempt++
-        await this.wait();
+        await this.wait(this.retryAttempt * 2);
         return await this.get(endPoint, id)
       } else {
         throw new AcendaError({ url }, error);

@@ -14,6 +14,7 @@ export class AcendaError implements AxiosError {
     this.isAxiosError = error.isAxiosError
     this.response = error.response
     this.request = error.request
+
   }
   code?: string | undefined;
   request?: any;
@@ -28,7 +29,9 @@ export class AcendaError implements AxiosError {
 }
 
 export class Acenda {
+  apiRate: number
   constructor(private store: string, private accessToken: string, private retryOnFail: boolean = true) {
+    this.apiRate = 0
   }
 
   private async wait(seconds: number) {
@@ -38,6 +41,9 @@ export class Acenda {
   public async create(endPoint: string, data: any): Promise<AxiosResponse> {
     const url = this.urlBuilder(endPoint)
     try {
+      if (this.apiRate > 70) {
+        await this.wait(3);
+      }
       const response = await axios.post(url, data)
       await this.handleThrottling(response);
       this.retryAttempt = 0
@@ -56,6 +62,7 @@ export class Acenda {
   private async handleThrottling(response: AxiosResponse<any>) {
     const rateLimit: string = response.headers["x-acenda-api-throttle-call-limit"];
     const rate = Number(rateLimit.substring(0, rateLimit.indexOf('/')).trim());
+    this.apiRate = rate
     if (rate >= 80) {
       await this.wait(3);
     }
@@ -64,6 +71,9 @@ export class Acenda {
   public async update(endPoint: string, id: string, data: any): Promise<AxiosResponse> {
     const url = this.urlBuilder(`${endPoint}/${id}`)
     try {
+      if (this.apiRate > 70) {
+        await this.wait(3);
+      }
       const response = await axios.put(url, data)
       await this.handleThrottling(response);
       this.retryAttempt = 0
@@ -83,6 +93,9 @@ export class Acenda {
     const url = this.urlBuilder(`${endPoint}/${id}`)
 
     try {
+      if (this.apiRate > 70) {
+        await this.wait(3);
+      }
       const response = await axios.delete(url, { timeout: 60000 })
       await this.handleThrottling(response);
       this.retryAttempt = 0
@@ -101,6 +114,9 @@ export class Acenda {
   public async list(endPoint: string, params?: string, page?: number, limit?: number): Promise<AxiosResponse> {
     const url = this.urlBuilder(endPoint, params, page, limit)
     try {
+      if (this.apiRate > 70) {
+        await this.wait(3);
+      }
       const response = await axios.get(url, { timeout: 60000 })
       await this.handleThrottling(response);
       this.retryAttempt = 0
@@ -119,6 +135,9 @@ export class Acenda {
   public async get(endPoint: string, id: string): Promise<AxiosResponse> {
     const url = this.urlBuilder(`${endPoint}/${id}`)
     try {
+      if (this.apiRate > 70) {
+        await this.wait(3);
+      }
       const response = await axios.get(url)
       await this.handleThrottling(response);
       this.retryAttempt = 0

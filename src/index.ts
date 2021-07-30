@@ -31,7 +31,7 @@ export class Acenda {
   constructor(private store: string, private accessToken: string, private retryOnFail: boolean = true) {
   }
 
-  private wait(seconds: number) {
+  private async wait(seconds: number) {
     return new Promise((r, j) => setTimeout(r, 1000 * seconds))
   }
   private retryAttempt = 0
@@ -55,7 +55,7 @@ export class Acenda {
 
   private async handleThrottling(response: AxiosResponse<any>) {
     const rateLimit: string = response.headers["x-acenda-api-throttle-call-limit"];
-    const rate = Number(rateLimit.substring(0, rateLimit.indexOf('/') - 1).trim());
+    const rate = Number(rateLimit.substring(0, rateLimit.indexOf('/')).trim());
     if (rate >= 80) {
       await this.wait(3);
     }

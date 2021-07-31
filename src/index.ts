@@ -61,11 +61,16 @@ export class Acenda {
 
   private async handleThrottling(response: AxiosResponse<any>) {
     const rateLimit: string = response.headers["x-acenda-api-throttle-call-limit"];
-    const rate = Number(rateLimit.substring(0, rateLimit.indexOf('/')).trim());
-    this.apiRate = rate
-    if (rate >= 80) {
-      await this.wait(3);
+    if (rateLimit) {
+      const rate = Number(rateLimit.substring(0, rateLimit.indexOf('/')).trim());
+      if (Number.isInteger(rate)) {
+        this.apiRate = rate
+        if (rate >= 80) {
+          await this.wait(3);
+        }
+      }
     }
+
   }
 
   public async update(endPoint: string, id: string, data: any): Promise<AxiosResponse> {

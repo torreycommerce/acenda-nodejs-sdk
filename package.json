@@ -1,6 +1,6 @@
 {
   "name": "acenda",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "description": "Acenda nodejs SDK",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

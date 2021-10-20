@@ -48,8 +48,16 @@ export class Acenda {
       await this.handleThrottling(response);
       this.retryAttempt = 0
       return response
-    } catch (error) {
-      if (error.response && error.response.status == 429 && this.retryAttempt < 3 && this.retryOnFail) {
+    } catch (error: any) {
+      if (!error.response) {
+        this.retryAttempt++
+        await this.wait(30 * this.retryAttempt)
+        if (this.retryAttempt < 3 && this.retryOnFail) {
+          return await this.create(endPoint, data)
+        } else {
+          throw new AcendaError({ url }, { code: "500", name: "Server Error", message: "Server can not be reached.", isAxiosError: true, config: { url }, response: { data: {}, status: 500, statusText: "Server Error", config: { url }, headers: {} }, toJSON: JSON.parse("null") })
+        }
+      } else if (error.response.status == 429 && this.retryAttempt < 3 && this.retryOnFail) {
         this.retryAttempt++
         await this.wait(this.retryAttempt * 2);
         return await this.create(endPoint, data)
@@ -57,6 +65,7 @@ export class Acenda {
         throw new AcendaError({ url }, error);
       }
     }
+
   }
 
   private async handleThrottling(response: AxiosResponse<any>) {
@@ -83,8 +92,16 @@ export class Acenda {
       await this.handleThrottling(response);
       this.retryAttempt = 0
       return response
-    } catch (error) {
-      if (error.response && error.response.status == 429 && this.retryAttempt < 3 && this.retryOnFail) {
+    } catch (error: any) {
+      if (!error.response) {
+        this.retryAttempt++
+        await this.wait(30 * this.retryAttempt)
+        if (this.retryAttempt < 3 && this.retryOnFail) {
+          return await this.update(endPoint, id, data)
+        } else {
+          throw new AcendaError({ url }, { code: "500", name: "Server Error", message: "Server can not be reached.", isAxiosError: true, config: { url }, response: { data: {}, status: 500, statusText: "Server Error", config: { url }, headers: {} }, toJSON: JSON.parse("null") })
+        }
+      } else if (error.response.status == 429 && this.retryAttempt < 3 && this.retryOnFail) {
         this.retryAttempt++
         await this.wait(this.retryAttempt * 2);
         return await this.update(endPoint, id, data)
@@ -105,8 +122,16 @@ export class Acenda {
       await this.handleThrottling(response);
       this.retryAttempt = 0
       return response
-    } catch (error) {
-      if (error.response && error.response.status == 429 && this.retryAttempt < 3 && this.retryOnFail) {
+    } catch (error: any) {
+      if (!error.response) {
+        this.retryAttempt++
+        await this.wait(30 * this.retryAttempt)
+        if (this.retryAttempt < 3 && this.retryOnFail) {
+          return await this.delete(endPoint, id)
+        } else {
+          throw new AcendaError({ url }, { code: "500", name: "Server Error", message: "Server can not be reached.", isAxiosError: true, config: { url }, response: { data: {}, status: 500, statusText: "Server Error", config: { url }, headers: {} }, toJSON: JSON.parse("null") })
+        }
+      } else if (error.response.status == 429 && this.retryAttempt < 3 && this.retryOnFail) {
         this.retryAttempt++
         await this.wait(this.retryAttempt * 2);
         return await this.delete(endPoint, id)
@@ -126,10 +151,17 @@ export class Acenda {
       await this.handleThrottling(response);
       this.retryAttempt = 0
       return response
-    } catch (error) {
-      if (error.response && error.response.status == 429 && this.retryAttempt < 3 && this.retryOnFail) {
+    } catch (error: any) {
+      if (!error.response) {
         this.retryAttempt++
-        await this.wait(this.retryAttempt * 2);
+        await this.wait(30 * this.retryAttempt)
+        if (this.retryAttempt < 3 && this.retryOnFail) {
+          return await this.list(endPoint, params, page, limit)
+        } else {
+          throw new AcendaError({ url }, { code: "500", name: "Server Error", message: "Server can not be reached.", isAxiosError: true, config: { url }, response: { data: {}, status: 500, statusText: "Server Error", config: { url }, headers: {} }, toJSON: JSON.parse("null") })
+        }
+      } else if (error.response.status == 429 && this.retryAttempt < 3 && this.retryOnFail) {
+        this.retryAttempt++
         return await this.list(endPoint, params, page, limit)
       } else {
         throw new AcendaError({ url }, error);
@@ -147,10 +179,17 @@ export class Acenda {
       await this.handleThrottling(response);
       this.retryAttempt = 0
       return response
-    } catch (error) {
-      if (error.response && error.response.status == 429 && this.retryAttempt < 3 && this.retryOnFail) {
+    } catch (error: any) {
+      if (!error.response) {
         this.retryAttempt++
-        await this.wait(this.retryAttempt * 2);
+        await this.wait(30 * this.retryAttempt)
+        if (this.retryAttempt < 3 && this.retryOnFail) {
+          return await this.get(endPoint, id)
+        } else {
+          throw new AcendaError({ url }, { code: "500", name: "Server Error", message: "Server can not be reached.", isAxiosError: true, config: { url }, response: { data: {}, status: 500, statusText: "Server Error", config: { url }, headers: {} }, toJSON: JSON.parse("null") })
+        }
+      } else if (error.response.status == 429 && this.retryAttempt < 3 && this.retryOnFail) {
+        this.retryAttempt++
         return await this.get(endPoint, id)
       } else {
         throw new AcendaError({ url }, error);

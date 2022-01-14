@@ -1,6 +1,6 @@
 {
   "name": "acenda",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "Acenda nodejs SDK",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,8 +10,8 @@
   "author": "Ahmet Tok",
   "license": "MIT",
   "dependencies": {
-    "@types/md5": "^2.2.1",
-    "axios": "^0.21.1",
+    "@types/md5": "^2.3.1",
+    "axios": "^0.24.0",
     "md5": "^2.3.0"
   }
 }
